@@ -1,38 +1,97 @@
-.App {
-  text-align: center;
-}
+@import url('https://fonts.googleapis.com/css?family=Cairo');
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
+@keyframes spin {
   to {
-    transform: rotate(360deg);
+    transform: rotate(360deg)
+  }
+}
+
+body {
+  background-color: #a4cc39;
+}
+
+#repeatButton {
+  appearance: none;
+  border: none;
+  background: url(https://andyhoffman.codes/random-assets/img/slots/repeat.png) transparent 0 0 no-repeat;
+  background-size: cover;
+  width: 48px;
+  height: 48px;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  cursor: pointer;
+  animation: 6s linear infinite spin;
+}
+
+h1 {
+  font-size: 150%;
+  font-family: 'Cairo', sans-serif;
+}
+
+h1 span {
+  color: aliceblue;
+  border: 1px solid hsla(208, 100%, 97.1%, .1);
+  display: inline-block;
+  padding: 0.75rem 1rem;
+}
+
+.icons {
+  display: inline-block;
+  width: 551px;
+  height: 1200px;
+  overflow: hidden;
+  background: #fff url(images/icons.jpg) repeat-y;
+  will-change: backgroundPosition;
+  transition: 0.3s background-position ease-in-out;
+  padding: 0 80px;
+  transform: translateZ(0);
+}
+
+.icons:nth-child(2) {
+  margin: 0 100px;
+}
+
+* { box-sizing: border-box; }
+
+.spinner-container {
+  overflow: hidden;
+  height: 1263px;
+  padding: 2em;
+  transform: translate(-50%, -50%) scale(.62, .62);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  transition: 0.3s transform;
+}
+
+.app-wrap.winner-false {
+  animation: linear 1s spin;
+}
+
+.spinner-container::after {
+  position: absolute;
+  content: '';
+  display: block;
+  height: 400px;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 30px;
+  left: 30px;
+  background: #a4cc39;
+  opacity: 30%;
+}
+
+
+@media screen and (max-width: 1500px) {
+  .spinner-container {
+    transform: translate(-50%, -50%) scale(.55, .55);
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .spinner-container {
+    transform: translate(-50%, -50%) scale(.4, .4);
   }
 }
