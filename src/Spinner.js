@@ -87,7 +87,7 @@ class Spinner extends Component {
 
     render() {
         const { position } = this.state;
-        return <div style={{ backgroundPosition: '0px ' + position + 'px' }} className="icons" />;
+        return <div style={{ backgroundPosition: '0px ' + position + 'px' }} className="icons" id={"icons" + this.props.spinnerIndex} />;
     }
 }
 

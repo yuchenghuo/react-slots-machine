@@ -7,6 +7,7 @@ import jackpotSound from './sounds/3_Jackpot.mp3';
 import smallWinImage from './images/1_Big_Win.jpg';
 import mediumWinImage from './images/2_Mega_Win.jpg';
 import jackpotImage from './images/3_Jackpot.jpg';
+import freeSpinImage from './images/Freespin_2-100.jpg';
 import { ModalContent } from "./Modal";
 import './App.css';
 
@@ -56,7 +57,9 @@ class App extends Component {
     if (smallWinSound.currentTime > 0 && !smallWinSound.paused) {
         return;
     }
-    this.handleClick();
+    if (event.keyCode === 32) {
+      this.handleClick();
+    }
   }
 
   handleClick() {
@@ -64,6 +67,7 @@ class App extends Component {
       smallWinner: false,
       mediumWinner: false,
       jackpotWinner: false,
+      freeSpinWinner: false,
     });
     this.emptyArray();
     this.calculateStartPosition();
@@ -89,123 +93,124 @@ class App extends Component {
     const totalSymbols = 7;
     const iconHeight = 400;
 
-    let jackpotProbability = 0.10;
-    let mediumProbability = 0.18 + jackpotProbability;
-    let smallProbability = 0.26 + mediumProbability;
-    let freeSpinProbability = 0.10 + smallProbability;
-    jackpotProbability /= 3;
-    mediumProbability /= 3;
-    smallProbability /= 3;
-    freeSpinProbability /= 3;
+    let jackpotProbability = 0.10 / 3;
+    let mediumProbability = 0.18 / 3 + jackpotProbability;
+    let smallProbability = 0.26 / 3 + mediumProbability;
+    let freeSpinProbability = 0.10 / 3 + smallProbability;
     let randomNumber = Math.random();
+
+    const spinner1Index = {
+        'jackpot': 5,
+        'freeSpin': 2,
+        'highProtein': 1,
+        'edamame': 3,
+        'plantBased': 4,
+        'beanCharacter': 6,
+        'superSnack': 7,
+    }
+
+    const spinner2Index = {
+        'jackpot': 2,
+        'freeSpin': 7,
+        'highProtein': 6,
+        'edamame': 5,
+        'plantBased': 1,
+        'beanCharacter': 3,
+        'superSnack': 4,
+    }
+
+    const spinner3Index = {
+        'jackpot': 4,
+        'freeSpin': 5,
+        'highProtein': 2,
+        'edamame': 7,
+        'plantBased': 6,
+        'beanCharacter': 1,
+        'superSnack': 3,
+    }
 
     if (randomNumber < jackpotProbability) {
       const jackpotSound = document.getElementById('jackpotSound');
       jackpotSound.play();
       console.log('Jackpot!');
-      const jackpotPosition = 2 * iconHeight * -1;
       this.startPositions = {
-        firstSpinner: jackpotPosition,
-        secondSpinner: jackpotPosition,
-        thirdSpinner: jackpotPosition,
+        firstSpinner: spinner1Index['jackpot'] * iconHeight * -1,
+        secondSpinner: spinner2Index['jackpot'] * iconHeight * -1,
+        thirdSpinner: spinner3Index['jackpot'] * iconHeight * -1,
       };
       setTimeout(() => this.setState({jackpotWinner: true}), 3000);
     } else if (randomNumber < mediumProbability) {
       const mediumWinSound = document.getElementById('mediumWinSound');
       mediumWinSound.play();
       console.log('Medium win!');
-      let index = 2;
-      while (index === 2 || index === 7) {
+      let index = Math.floor(Math.random() * totalSymbols) + 1;
+      const keys = Object.keys(spinner1Index);
+      while (keys[index - 1] === 'jackpot' || keys[index - 1] === 'freeSpin') {
         // Generate a random number between 1 and 7
         index = Math.floor(Math.random() * totalSymbols) + 1;
       }
-      const mediumPosition = index * iconHeight * -1;
       this.startPositions = {
-          firstSpinner: mediumPosition,
-          secondSpinner: mediumPosition,
-          thirdSpinner: mediumPosition,
+          firstSpinner: spinner1Index[keys[index - 1]] * iconHeight * -1,
+          secondSpinner: spinner2Index[keys[index - 1]] * iconHeight * -1,
+          thirdSpinner: spinner3Index[keys[index - 1]] * iconHeight * -1,
       };
       setTimeout(() => this.setState({mediumWinner: true}), 3000);
     } else if (randomNumber < smallProbability) {
       const smallWinSound = document.getElementById('smallWinSound');
       smallWinSound.play();
       console.log('Small win!');
-      const smallWinIndexes = [1, 4, 6];
-      const index1 = smallWinIndexes[Math.floor(Math.random() * smallWinIndexes.length)];
-      const index2 = smallWinIndexes[Math.floor(Math.random() * smallWinIndexes.length)];
-      const index3 = smallWinIndexes[Math.floor(Math.random() * smallWinIndexes.length)];
+      const smallWinKeys = ['highProtein', 'plantBased', 'superSnack'];
+      let key1 = smallWinKeys[Math.floor(Math.random() * smallWinKeys.length)];
+      let key2 = smallWinKeys[Math.floor(Math.random() * smallWinKeys.length)];
+      let key3 = smallWinKeys[Math.floor(Math.random() * smallWinKeys.length)];
+
+      while (key1 === key2 && key2 === key3) {
+        key1 = smallWinKeys[Math.floor(Math.random() * smallWinKeys.length)];
+        key2 = smallWinKeys[Math.floor(Math.random() * smallWinKeys.length)];
+        key3 = smallWinKeys[Math.floor(Math.random() * smallWinKeys.length)];
+      }
 
       this.startPositions = {
-          firstSpinner: index1 * iconHeight * -1,
-          secondSpinner: index2 * iconHeight * -1,
-          thirdSpinner: index3 * iconHeight * -1,
+          firstSpinner: spinner1Index[key1] * iconHeight * -1,
+          secondSpinner: spinner2Index[key2] * iconHeight * -1,
+          thirdSpinner: spinner3Index[key3] * iconHeight * -1,
       };
       setTimeout(() => this.setState({smallWinner: true}), 3000);
     } else if (randomNumber < freeSpinProbability) {
       const losingSound = document.getElementById('losingSound');
       losingSound.play();
       console.log('Free spin!');
-      const freeSpinPosition = 7 * iconHeight * -1;
       this.startPositions = {
-          firstSpinner: freeSpinPosition,
-          secondSpinner: freeSpinPosition,
-          thirdSpinner: freeSpinPosition,
+          firstSpinner: spinner1Index['freeSpin'] * iconHeight * -1,
+          secondSpinner: spinner2Index['freeSpin'] * iconHeight * -1,
+          thirdSpinner: spinner3Index['freeSpin'] * iconHeight * -1,
       };
+        setTimeout(() => this.setState({freeSpinWinner: true}), 3000);
     } else {
       const losingSound = document.getElementById('losingSound');
       losingSound.play();
       console.log('No win!');
-      let firstPosition = (Math.floor(Math.random() * totalSymbols)) * iconHeight * -1;
-      let secondPosition = (Math.floor(Math.random() * totalSymbols)) * iconHeight * -1;
-      let thirdPosition = (Math.floor(Math.random() * totalSymbols)) * iconHeight * -1;
+      let firstIndex = Math.floor(Math.random() * totalSymbols);
+      let secondIndex = Math.floor(Math.random() * totalSymbols);
+      let thirdIndex = Math.floor(Math.random() * totalSymbols);
+      const keys = Object.keys(spinner1Index);
+      const barKeys = ['highProtein', 'plantBased', 'superSnack'];
+
       while (
-            // Check if all 3 positions are the same
-            (firstPosition === secondPosition && secondPosition === thirdPosition) ||
-            // Check if 3 positions are in a permutation of 1, 4, 6
-            (firstPosition === 1 && secondPosition === 1 && thirdPosition === 1) ||
-            (firstPosition === 1 && secondPosition === 1 && thirdPosition === 4) ||
-            (firstPosition === 1 && secondPosition === 1 && thirdPosition === 6) ||
-            (firstPosition === 1 && secondPosition === 4 && thirdPosition === 1) ||
-            (firstPosition === 1 && secondPosition === 4 && thirdPosition === 4) ||
-            (firstPosition === 1 && secondPosition === 4 && thirdPosition === 6) ||
-            (firstPosition === 1 && secondPosition === 6 && thirdPosition === 1) ||
-            (firstPosition === 1 && secondPosition === 6 && thirdPosition === 4) ||
-            (firstPosition === 1 && secondPosition === 6 && thirdPosition === 6) ||
-            (firstPosition === 4 && secondPosition === 1 && thirdPosition === 1) ||
-            (firstPosition === 4 && secondPosition === 1 && thirdPosition === 4) ||
-            (firstPosition === 4 && secondPosition === 1 && thirdPosition === 6) ||
-            (firstPosition === 4 && secondPosition === 4 && thirdPosition === 1) ||
-            (firstPosition === 4 && secondPosition === 4 && thirdPosition === 4) ||
-            (firstPosition === 4 && secondPosition === 4 && thirdPosition === 6) ||
-            (firstPosition === 4 && secondPosition === 6 && thirdPosition === 1) ||
-            (firstPosition === 4 && secondPosition === 6 && thirdPosition === 4) ||
-            (firstPosition === 4 && secondPosition === 6 && thirdPosition === 6) ||
-            (firstPosition === 6 && secondPosition === 1 && thirdPosition === 1) ||
-            (firstPosition === 6 && secondPosition === 1 && thirdPosition === 4) ||
-            (firstPosition === 6 && secondPosition === 1 && thirdPosition === 6) ||
-            (firstPosition === 6 && secondPosition === 4 && thirdPosition === 1) ||
-            (firstPosition === 6 && secondPosition === 4 && thirdPosition === 4) ||
-            (firstPosition === 6 && secondPosition === 4 && thirdPosition === 6) ||
-            (firstPosition === 6 && secondPosition === 6 && thirdPosition === 1) ||
-            (firstPosition === 6 && secondPosition === 6 && thirdPosition === 4) ||
-            (firstPosition === 6 && secondPosition === 6 && thirdPosition === 6)
+        (keys[firstIndex] === keys[secondIndex] && keys[secondIndex] === keys[thirdIndex]) ||
+        (barKeys.includes(keys[firstIndex]) && barKeys.includes(keys[secondIndex]) && barKeys.includes(keys[thirdIndex]))
         ) {
-        firstPosition = (Math.floor(Math.random() * totalSymbols)) * iconHeight * -1;
-        secondPosition = (Math.floor(Math.random() * totalSymbols)) * iconHeight * -1;
-        thirdPosition = (Math.floor(Math.random() * totalSymbols)) * iconHeight * -1;
+        firstIndex = Math.floor(Math.random() * totalSymbols);
+        secondIndex = Math.floor(Math.random() * totalSymbols);
+        thirdIndex = Math.floor(Math.random() * totalSymbols);
       }
+      console.log(`First position: ${keys[firstIndex]}, Second position: ${keys[secondIndex]}, Third position: ${keys[thirdIndex]}`);
       this.startPositions = {
-          firstSpinner: firstPosition,
-          secondSpinner: secondPosition,
-          thirdSpinner: thirdPosition,
+          firstSpinner: spinner1Index[keys[firstIndex]] * iconHeight * -1,
+          secondSpinner: spinner2Index[keys[secondIndex]] * iconHeight * -1,
+          thirdSpinner: spinner3Index[keys[thirdIndex]] * iconHeight * -1,
       };
     }
-    // testing
-    // this.startPositions = {
-    //     firstSpinner: 0,
-    //     secondSpinner: 0,
-    //     thirdSpinner: 0,
-    // }
     this.startPositions.firstSpinner = this.startPositions.firstSpinner + 17 * iconHeight * -1;
     this.startPositions.secondSpinner = this.startPositions.secondSpinner + 23 * iconHeight * -1;
     this.startPositions.thirdSpinner = this.startPositions.thirdSpinner + 42 * iconHeight * -1;
@@ -231,6 +236,11 @@ class App extends Component {
           {this.state.mediumWinner && (
               <ModalContent onClose={() => this.setState({mediumWinner: false})}>
                 <img src={mediumWinImage} width={500} height={300} alt=""/>
+              </ModalContent>
+          )}
+          {this.state.freeSpinWinner && (
+            <ModalContent onClose={() => this.setState({freeSpinWinner: false})}>
+              <img src={freeSpinImage} width={500} height={300} alt=""/>
               </ModalContent>
           )}
           <audio id="losingSound">

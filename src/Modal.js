@@ -35,7 +35,7 @@ export const ModalContent = ({ onClose, children }) => {
       <span style={close} onClick={onClose}>
         &times;
       </span>
-      <div style={modalContent}>{children}</div>
+      <div style={modalContent} className={"grow-modal-animation"}>{children}</div>
     </div>
   );
 };

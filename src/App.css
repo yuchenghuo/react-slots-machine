@@ -41,11 +41,22 @@ h1 span {
   width: 551px;
   height: 1200px;
   overflow: hidden;
-  background: #fff url(images/icons.jpg) repeat-y;
   will-change: backgroundPosition;
   transition: 0.3s background-position ease-in-out;
   padding: 0 80px;
   transform: translateZ(0);
+}
+
+#icons0 {
+  background: #fff url(images/Spin_Wheel_1-100.jpg) repeat-y;
+}
+
+#icons1 {
+  background: #fff url(images/Spin_Wheel_2-100.jpg) repeat-y;
+}
+
+#icons2 {
+  background: #fff url(images/Spin_Wheel_3-100.jpg) repeat-y;
 }
 
 .icons:nth-child(2) {
