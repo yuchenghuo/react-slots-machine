@@ -211,9 +211,9 @@ class App extends Component {
           thirdSpinner: spinner3Index[keys[thirdIndex]] * iconHeight * -1,
       };
     }
-    this.startPositions.firstSpinner = this.startPositions.firstSpinner + 17 * iconHeight * -1 - 200;
-    this.startPositions.secondSpinner = this.startPositions.secondSpinner + 23 * iconHeight * -1 - 200;
-    this.startPositions.thirdSpinner = this.startPositions.thirdSpinner + 42 * iconHeight * -1 - 200;
+    this.startPositions.firstSpinner = this.startPositions.firstSpinner + 17 * iconHeight * -1;
+    this.startPositions.secondSpinner = this.startPositions.secondSpinner + 23 * iconHeight * -1;
+    this.startPositions.thirdSpinner = this.startPositions.thirdSpinner + 42 * iconHeight * -1;
     console.log(`Start positions: ${JSON.stringify(this.startPositions)}`)
   }
 
