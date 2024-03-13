@@ -93,9 +93,9 @@ class App extends Component {
     const totalSymbols = 7;
     const iconHeight = 400;
 
-    let jackpotProbability = 0.10 / 3;
-    let mediumProbability = 0.18 / 3 + jackpotProbability;
-    let smallProbability = 0.26 / 3 + mediumProbability;
+    let jackpotProbability = 0.0946 / 3;
+    let mediumProbability = 0.1408 / 3 + jackpotProbability;
+    let smallProbability = 0.1610 / 3 + mediumProbability;
     let freeSpinProbability = 0.10 / 3 + smallProbability;
     let randomNumber = Math.random();
 
@@ -211,9 +211,9 @@ class App extends Component {
           thirdSpinner: spinner3Index[keys[thirdIndex]] * iconHeight * -1,
       };
     }
-    this.startPositions.firstSpinner = this.startPositions.firstSpinner + 17 * iconHeight * -1;
-    this.startPositions.secondSpinner = this.startPositions.secondSpinner + 23 * iconHeight * -1;
-    this.startPositions.thirdSpinner = this.startPositions.thirdSpinner + 42 * iconHeight * -1;
+    this.startPositions.firstSpinner = this.startPositions.firstSpinner + 17 * iconHeight * -1 - 200;
+    this.startPositions.secondSpinner = this.startPositions.secondSpinner + 23 * iconHeight * -1 - 200;
+    this.startPositions.thirdSpinner = this.startPositions.thirdSpinner + 42 * iconHeight * -1 - 200;
     console.log(`Start positions: ${JSON.stringify(this.startPositions)}`)
   }
 
