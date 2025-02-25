@@ -1,19 +1,42 @@
 @import url('https://fonts.googleapis.com/css?family=Cairo');
 
+/* Define color variables for consistency */
+:root {
+  --primary-green: #a4cc39;
+  --light-green: #c8e16c;
+  --dark-green: #8baa2f;
+  --accent-red: #ff5e57;
+  --accent-red-hover: #e04a44;
+  --white: #ffffff;
+  --text-dark: #333;
+  --text-light: #555;
+}
+
+/* Animations */
 @keyframes spin {
   to {
-    transform: rotate(360deg)
+    transform: rotate(360deg);
   }
 }
 
-body {
-  background-color: #a4cc39;
+/* Global Styles */
+* {
+  box-sizing: border-box;
 }
 
+body {
+  background-color: var(--primary-green);
+  font-family: 'Cairo', sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Repeat Button Styling */
 #repeatButton {
   appearance: none;
   border: none;
-  background: url(https://andyhoffman.codes/random-assets/img/slots/repeat.png) transparent 0 0 no-repeat;
+  background: url(https://andyhoffman.codes/random-assets/img/slots/repeat.png) transparent no-repeat center;
   background-size: cover;
   width: 48px;
   height: 48px;
@@ -21,88 +44,191 @@ body {
   top: 10px;
   right: 20px;
   cursor: pointer;
-  animation: 6s linear infinite spin;
+  animation: spin 6s linear infinite;
 }
 
+/* Headings */
 h1 {
-  font-size: 150%;
-  font-family: 'Cairo', sans-serif;
+  font-size: 1.5rem;
+  text-align: center;
+  margin: 1rem 0;
 }
 
 h1 span {
-  color: aliceblue;
-  border: 1px solid hsla(208, 100%, 97.1%, .1);
+  color: var(--white);
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   display: inline-block;
   padding: 0.75rem 1rem;
+  border-radius: 4px;
 }
 
+/* Spinner & Icon Styling */
 .icons {
   display: inline-block;
   width: 551px;
   height: 1200px;
   overflow: hidden;
-  will-change: backgroundPosition;
-  transition: 0.3s background-position ease-in-out;
-  padding: 0 80px;
-  transform: translateZ(0);
+  border-radius: 12px;
+  position: relative;
+  transition: background-position 0.3s ease-in-out, transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.icons:hover {
+  transform: scale(1.02);
 }
 
 #icons0 {
-  background: #fff url(images/Spin_Wheel_1-100.jpg) repeat-y;
+  background: var(--white) url(images/Spin_Wheel_1-100.jpg) repeat-y;
+  background-size: cover;
+  background-position: center;
 }
 
 #icons1 {
-  background: #fff url(images/Spin_Wheel_2-100.jpg) repeat-y;
+  background: var(--white) url(images/Spin_Wheel_2-100.jpg) repeat-y;
+  background-size: cover;
+  background-position: center;
 }
 
 #icons2 {
-  background: #fff url(images/Spin_Wheel_3-100.jpg) repeat-y;
+  background: var(--white) url(images/Spin_Wheel_3-100.jpg) repeat-y;
+  background-size: cover;
+  background-position: center;
 }
 
-.icons:nth-child(2) {
-  margin: 0 100px;
+.spinner-container .icons:not(:last-child) {
+  margin-right: 30px;
 }
 
-* { box-sizing: border-box; }
-
+/* Spinner Container */
 .spinner-container {
-  overflow: hidden;
-  height: 1263px;
-  padding: 2em;
-  transform: translate(-50%, -50%) scale(.62, .62);
   position: absolute;
   top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%) scale(0.62);
   display: flex;
-  transition: 0.3s transform;
+  overflow: hidden;
+  height: 1263px;
+  padding: 2em;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.95));
+  transition: transform 0.3s ease;
 }
 
-.app-wrap.winner-false {
-  animation: linear 1s spin;
-}
 
+/* Overlay gradient for subtle fade effect */
 .spinner-container::after {
-  position: absolute;
   content: '';
-  display: block;
-  height: 400px;
+  position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  right: 30px;
   left: 30px;
-  background: #a4cc39;
-  opacity: 30%;
+  right: 30px;
+  transform: translateY(-50%);
+  height: 400px;
+  background: var(--primary-green);
+  opacity: 0.3;
+  pointer-events: none;
 }
 
+/* Stats & Settings Panel Container */
+.stats-settings {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-family: 'Cairo', sans-serif;
+}
 
+/* Headings */
+.stats-settings h3 {
+  margin-top: 0;
+  text-align: center;
+  color: var(--text-dark);
+  font-size: 1.2rem;
+}
+
+/* Stats Section */
+.stats-settings .stats {
+  margin-bottom: 20px;
+}
+
+.stats-settings .stats p {
+  margin: 8px 0;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+/* Clear Stats Button */
+.stats-settings button {
+  display: block;
+  margin: 10px auto;
+  padding: 8px 16px;
+  background-color: var(--accent-red);
+  color: var(--white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.stats-settings button:hover {
+  background-color: var(--accent-red-hover);
+}
+
+/* Settings Section */
+.stats-settings .settings {
+  margin-bottom: 20px;
+}
+
+.stats-settings .settings div {
+  margin-bottom: 10px;
+}
+
+/* Labels & Input Fields */
+.stats-settings label {
+  display: inline-block;
+  width: 150px;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+}
+
+.stats-settings input[type="number"] {
+  width: 120px;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+  transition: border-color 0.2s ease;
+}
+
+.stats-settings input[type="number"]:focus {
+  outline: none;
+  border-color: var(--dark-green);
+}
+
+/* Winner Animation (if needed) */
+.app-wrap.winner-false {
+  animation: spin 1s linear;
+}
+
+/* Responsive adjustments */
 @media screen and (max-width: 1500px) {
   .spinner-container {
-    transform: translate(-50%, -50%) scale(.55, .55);
+    transform: translate(-50%, -50%) scale(0.55);
   }
 }
 
 @media screen and (max-width: 1300px) {
   .spinner-container {
-    transform: translate(-50%, -50%) scale(.4, .4);
+    transform: translate(-50%, -50%) scale(0.4);
   }
 }

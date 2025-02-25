@@ -24,9 +24,9 @@ const close = {
 const modalContent = {
   display: "flex",
   alignItems: "center",
-  width: "32.5%",
-  height: "100%",
-  margin: "auto"
+  justifyContent: "center",
+  textAlign: "center",
+  height: "100%"
 };
 
 export const ModalContent = ({ onClose, children }) => {

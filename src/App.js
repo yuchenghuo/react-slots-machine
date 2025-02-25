@@ -16,6 +16,18 @@ class App extends Component {
     smallWinner: false,
     mediumWinner: false,
     jackpotWinner: false,
+    totalSpins: 0,
+    smallWins: 0,
+    mediumWins: 0,
+    jackpotsWins: 0,
+    freeSpins: 0,
+    showStats: false,
+    settings: {
+      jackpotProbability: 0.06,
+      mediumProbability: 0.09,
+      smallProbability: 0.15,
+      freeSpinProbability: 0.10,
+    }
   };
 
   startPositions = {
@@ -33,6 +45,14 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const savedStats = localStorage.getItem('gameStats');
+    if (savedStats) {
+      this.setState(JSON.parse(savedStats));
+    }
+    const savedSettings = localStorage.getItem('gameSettings');
+    if (savedSettings) {
+      this.setState({ settings: JSON.parse(savedSettings) });
+    }
     document.addEventListener('keydown', this.handleKeyPress);
   }
 
@@ -41,6 +61,11 @@ class App extends Component {
   }
 
   handleKeyPress(event) {
+    if (event.keyCode === 83) {
+      this.setState(prevState => ({ showStats: !prevState.showStats }));
+      return;
+    }
+
     const losingSound = document.getElementById('losingSound');
     const jackpotSound = document.getElementById('jackpotSound');
     const mediumWinSound = document.getElementById('mediumWinSound');
@@ -62,13 +87,45 @@ class App extends Component {
     }
   }
 
+  updateStatsStorage = () => {
+    const { totalSpins, jackpotWins, mediumWins, smallWins, freeSpins } = this.state;
+    localStorage.setItem('gameStats', JSON.stringify({ totalSpins, jackpotWins, mediumWins, smallWins, freeSpins }));
+  };
+
+  updateSettingsStorage = () => {
+    const { settings } = this.state;
+    localStorage.setItem('gameSettings', JSON.stringify(settings));
+  };
+
+  clearStats = () => {
+    localStorage.removeItem('gameStats');
+    this.setState({
+      totalSpins: 0,
+      jackpotWins: 0,
+      mediumWins: 0,
+      smallWins: 0,
+      freeSpins: 0,
+    });
+  };
+
+  handleSettingsChange = (event) => {
+    const { name, value } = event.target;
+    this.setState(prevState => ({
+      settings: {
+        ...prevState.settings,
+        [name]: parseFloat(value)
+      }
+    }), this.updateSettingsStorage);
+  };
+
   handleClick() {
     this.setState({
       smallWinner: false,
       mediumWinner: false,
       jackpotWinner: false,
       freeSpinWinner: false,
-    });
+      totalSpins: this.state.totalSpins + 1,
+    }, this.updateStatsStorage);
     this.emptyArray();
     this.calculateStartPosition();
     ['_child1', '_child2', '_child3'].forEach(child => this[child].forceUpdateHandler());
@@ -93,10 +150,8 @@ class App extends Component {
     const totalSymbols = 7;
     const iconHeight = 400;
 
-    let jackpotProbability = 0.0946 / 3;
-    let mediumProbability = 0.1408 / 3 + jackpotProbability;
-    let smallProbability = 0.1610 / 3 + mediumProbability;
-    let freeSpinProbability = 0.10 / 3 + smallProbability;
+    const { jackpotProbability, mediumProbability, smallProbability, freeSpinProbability } = this.state.settings;
+
     let randomNumber = Math.random();
 
     const spinner1Index = {
@@ -138,7 +193,12 @@ class App extends Component {
         secondSpinner: spinner2Index['jackpot'] * iconHeight * -1,
         thirdSpinner: spinner3Index['jackpot'] * iconHeight * -1,
       };
-      setTimeout(() => this.setState({jackpotWinner: true}), 3000);
+      setTimeout(() => {
+        this.setState(prevState => ({
+          jackpotWinner: true,
+          jackpotWins: prevState.jackpotWins + 1,
+        }), this.updateStatsStorage);
+      }, 3000);
     } else if (randomNumber < mediumProbability) {
       const mediumWinSound = document.getElementById('mediumWinSound');
       mediumWinSound.play();
@@ -154,7 +214,12 @@ class App extends Component {
           secondSpinner: spinner2Index[keys[index - 1]] * iconHeight * -1,
           thirdSpinner: spinner3Index[keys[index - 1]] * iconHeight * -1,
       };
-      setTimeout(() => this.setState({mediumWinner: true}), 3000);
+      setTimeout(() => {
+        this.setState(prevState => ({
+          mediumWinner: true,
+          mediumWins: prevState.mediumWins + 1,
+        }), this.updateStatsStorage);
+      }, 3000);
     } else if (randomNumber < smallProbability) {
       const smallWinSound = document.getElementById('smallWinSound');
       smallWinSound.play();
@@ -175,7 +240,12 @@ class App extends Component {
           secondSpinner: spinner2Index[key2] * iconHeight * -1,
           thirdSpinner: spinner3Index[key3] * iconHeight * -1,
       };
-      setTimeout(() => this.setState({smallWinner: true}), 3000);
+      setTimeout(() => {
+        this.setState(prevState => ({
+          smallWinner: true,
+          smallWins: prevState.smallWins + 1,
+        }), this.updateStatsStorage);
+      }, 3000);
     } else if (randomNumber < freeSpinProbability) {
       const losingSound = document.getElementById('losingSound');
       losingSound.play();
@@ -185,7 +255,12 @@ class App extends Component {
           secondSpinner: spinner2Index['freeSpin'] * iconHeight * -1,
           thirdSpinner: spinner3Index['freeSpin'] * iconHeight * -1,
       };
-        setTimeout(() => this.setState({freeSpinWinner: true}), 3000);
+      setTimeout(() => {
+        this.setState(prevState => ({
+          freeSpinWinner: true,
+          freeSpins: prevState.freeSpins + 1,
+        }), this.updateStatsStorage);
+      }, 3000);
     } else {
       const losingSound = document.getElementById('losingSound');
       losingSound.play();
@@ -221,8 +296,45 @@ class App extends Component {
     const firstTimer = 800;
     const secondTimer = 1200;
     const thirdTimer = 2000;
+    const { totalSpins, jackpotWins, mediumWins, smallWins, freeSpins, showStats, settings } = this.state;
     return (
         <div>
+          {showStats && (
+            <div className="stats-settings">
+              <div className="stats">
+                <h3>Game Stats</h3>
+                <p>Total Spins: {totalSpins}</p>
+                <p>Jackpot Wins: {jackpotWins}</p>
+                <p>Medium Wins: {mediumWins}</p>
+                <p>Small Wins: {smallWins}</p>
+                <p>Free Spins: {freeSpins}</p>
+                <button onClick={this.clearStats}>Clear Stats</button>
+              </div>
+              <div className="settings">
+                <h3>Adjust Prize Probabilities</h3>
+                <div>
+                  <label>Jackpot: </label>
+                  <input type="number" step="0.01" name="jackpotProbability" value={settings.jackpotProbability}
+                         onChange={this.handleSettingsChange} />
+                </div>
+                <div>
+                  <label>Medium Win: </label>
+                  <input type="number" step="0.01" name="mediumProbability" value={settings.mediumProbability}
+                         onChange={this.handleSettingsChange} />
+                </div>
+                <div>
+                  <label>Small Win: </label>
+                  <input type="number" step="0.01" name="smallProbability" value={settings.smallProbability}
+                         onChange={this.handleSettingsChange} />
+                </div>
+                <div>
+                  <label>Free Spin: </label>
+                  <input type="number" step="0.01" name="freeSpinProbability" value={settings.freeSpinProbability}
+                         onChange={this.handleSettingsChange} />
+                </div>
+              </div>
+            </div>
+          )}
           {this.state.jackpotWinner && (
               <ModalContent onClose={() => this.setState({jackpotWinner: false})}>
                 <img src={jackpotImage} width={500} height={300} alt=""/>
