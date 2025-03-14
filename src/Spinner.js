@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, {Component} from 'react';
 
 class Spinner extends Component {
     state = {
@@ -19,6 +18,7 @@ class Spinner extends Component {
         } else {
             this.spinnerName = "thirdSpinner";
         }
+        this.multiplier = props.multiplier || 1;
         this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
     }
 
@@ -59,12 +59,10 @@ class Spinner extends Component {
     }
 
     getSymbolFromPosition() {
-        const { position } = this.state;
         const totalSymbols = 7;
         const maxPosition = Spinner.iconHeight * (totalSymbols - 1) * -1;
         let moved = parseInt(this.props.timer) / 100 * this.multiplier;
-        let startPosition = this.start;
-        let currentPosition = startPosition;
+        let currentPosition = this.start;
 
         for (let i = 0; i < moved; i++) {
             currentPosition -= Spinner.iconHeight;
@@ -72,7 +70,6 @@ class Spinner extends Component {
                 currentPosition = 0;
             }
         }
-
         this.props.onFinish(currentPosition);
     }
 

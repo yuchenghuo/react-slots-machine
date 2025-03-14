@@ -139,6 +139,7 @@ class App extends Component {
       const results = App.matches.every(match => match === App.matches[0]);
       this.setState({ winner: results });
     }
+    console.log(App.matches);
   }
 
   emptyArray() {
